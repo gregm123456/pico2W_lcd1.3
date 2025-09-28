@@ -1,4 +1,7 @@
 """
+SPDX-License-Identifier: MIT
+Copyright (c) 2025 Greg Merritt <gregm123456>
+
 Minimal MicroPython example for Waveshare Pico LCD 1.3 (ST7789) on Pico 2W.
 - Draws a simple color bar and text.
 - Reads two buttons (KEY_A, KEY_B) and toggles the screen color when pressed.

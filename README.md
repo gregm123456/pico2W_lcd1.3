@@ -2,6 +2,8 @@ Pico 2W + LCD 1.3 — Developer README
 
 This repository contains examples and documentation for using a Waveshare LCD 1.3 (ST7789VW) with a Raspberry Pi Pico / Pico2 (RP2040 / RP2350). The documentation below describes the recommended macOS + VSCode developer workflow, how to build and flash C firmware, and how to manage MicroPython examples using mpremote.
 
+License: MIT (see `LICENSE`) — SPDX-License-Identifier: MIT
+
 Overview
 - Recommended workflows
     - MicroPython-first development (fast iteration): edit locally in VSCode, use `mpremote` from a macOS terminal to run or install scripts, and keep a self-contained `main.py` on the device for persistent demos.

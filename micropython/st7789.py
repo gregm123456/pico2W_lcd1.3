@@ -1,6 +1,8 @@
 """
 Minimal ST7789 driver for MicroPython on Raspberry Pi Pico
 Based on common ST7789 implementations, simplified for basic color fills and text
+SPDX-License-Identifier: MIT
+Copyright (c) 2025 Greg Merritt <gregm123456>
 """
 
 import time

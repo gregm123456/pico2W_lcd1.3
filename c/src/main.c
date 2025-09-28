@@ -1,4 +1,6 @@
 #include "pico/stdlib.h"
+/* SPDX-License-Identifier: MIT */
+/* Copyright (c) 2025 Greg Merritt <gregm123456> */
 #include "hardware/spi.h"
 #include "lib/Config/DEV_Config.h"
 

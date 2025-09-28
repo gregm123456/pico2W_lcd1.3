@@ -1,4 +1,7 @@
 """
+SPDX-License-Identifier: MIT
+Copyright (c) 2025 Greg Merritt <gregm123456>
+
 Complete MicroPython example for Waveshare Pico LCD 1.3 (ST7789) on Pico 2W.
 Self-contained with embedded ST7789 driver - no external imports needed.
 """
