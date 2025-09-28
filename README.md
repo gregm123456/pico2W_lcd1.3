@@ -125,11 +125,108 @@ Files of interest (in Waveshare demos)
 - `lib/lvgl/` — LVGL sources (v8.x expected in demos)
 
 Next steps
-- I can create a minimal C skeleton and a matching MicroPython example that draws to the LCD and reads the buttons (they will use the pin mapping above). You said you'd like the README first — when you confirm this looks good I'll add the examples.
+- I created a minimal C skeleton and a matching MicroPython example under `micropython/main.py` that draws a color-screen and reads two buttons. The example assumes the Waveshare default pins listed above.
+
+Try the MicroPython example (VSCode + mpremote)
+
+1) Activate your venv and install mpremote in the project (see earlier section):
+
+```bash
+source .venv/bin/activate
+pip install mpremote
+```
+
+2) Copy the example to the board and run it (auto-detect serial port):
+
+```bash
+# Copy both the example and ST7789 driver to the device
+mpremote connect /dev/cu.usbmodem1301 fs put micropython/st7789.py :/st7789.py
+mpremote connect /dev/cu.usbmodem1301 fs put micropython/main.py :/main.py
+
+# Run the main script on the device
+mpremote connect /dev/cu.usbmodem1301 run :/main.py
+```
+
+3) Run the standalone version (recommended - works immediately)
+
+```bash
+mpremote connect /dev/cu.usbmodem1301 run micropython/standalone_main.py
+```
+
+This version includes the ST7789 driver embedded and displays colors on the LCD when you press buttons.
+
+4) Make the demo run automatically on power-up (persistent)
+
+```bash
+# Copy the standalone script to main.py on the device (auto-runs on boot)
+python3 -c "
+import subprocess
+with open('micropython/standalone_main.py', 'r') as f:
+    content = f.read()
+exec_cmd = f'with open(\"main.py\", \"w\") as f: f.write({repr(content)}); print(\"main.py installed for auto-run\")'
+subprocess.run(['mpremote', 'connect', '/dev/cu.usbmodem1301', 'exec', exec_cmd])
+"
+```
+
+After this, the demo will run automatically when you power the Pico with a USB battery.
+
+5) Alternative: run the modular version (requires separate files)
+
+```bash
+mpremote connect /dev/cu.usbmodem1301 run micropython/main.py
+```
+
+Notes:
+- The standalone version (`standalone_main.py`) is recommended as it works immediately without file uploads.
+- Button pins used: `GP15` (KEY_A increments colors) and `GP17` (KEY_B decrements colors).
+- If you see "bad SCK pin" errors, the SPI pin assignment may need adjustment for your board variant.
+- The display shows Red, Green, Blue, Yellow, Magenta, and Cyan colors in sequence.
+
+Build and flash the C demo (quick recap)
+
+```bash
+mkdir -p c/build && cd c/build
+export PICO_SDK_PATH=~/pico-sdk
+cmake -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 ..
+make -j$(sysctl -n hw.ncpu)
+
+# Put Pico into UF2 boot mode (hold BOOT while connecting); then copy
+cp main.uf2 /Volumes/RPI-RP2/   # adjust the mount name if different
+```
+
+If you prefer VSCode, use the `pico-vscode` extension to configure the toolchain and flash `main.uf2` directly from the editor.
 
 Issues / caveats
 - Pico2 firmware compatibility can be picky — prefer Waveshare-provided UF2 builds for MicroPython when running their examples.
 - If the Pico is mounted inside a 3D printed case and the Pico's onboard LEDs are inaccessible, ensure examples target the LCD and external buttons only.
+
+Troubleshooting: mpremote access issues
+
+If `mpremote` reports "failed to access ... (it may be in use by another program)":
+
+1) Use the device path directly instead of `serial://auto`:
+```bash
+# Find your device
+ls /dev/cu.* | grep usb
+# Use the direct path (e.g. /dev/cu.usbmodem1301)
+mpremote connect /dev/cu.usbmodem1301 fs ls
+```
+
+2) Kill any processes using the serial port:
+```bash
+# Check for blocking processes
+sudo lsof /dev/cu.usbmodem1301
+# Kill if safe (replace PID with actual process ID)
+kill <PID>
+```
+
+3) Test basic serial access:
+```bash
+# Test with Python's serial library
+python3 -c "import serial; s=serial.Serial('/dev/cu.usbmodem1301', 115200, timeout=1); print('Serial port accessible'); s.close()"
+```
+
+4) Unplug/replug the Pico and retry.
 
 Contact / more info
 - See `supporting_documents/Pico LCD 1.3 - Waveshare Wiki.html` for full wiring diagrams, LVGL notes, and example download links.
