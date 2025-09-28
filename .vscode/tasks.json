@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Create venv and install dev requirements",
+      "type": "shell",
+      "command": "bash scripts/setup_venv.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build C firmware (CMake)",
+      "type": "shell",
+      "command": "mkdir -p c/build && cd c/build && export PICO_SDK_PATH=~/pico-sdk && cmake -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 .. && make -j$(sysctl -n hw.ncpu)",
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    }
+  ]
+}

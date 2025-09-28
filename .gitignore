@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+build/
+.ccls-cache/
+.vscode/.history/
+*.uf2
+*.o
+*.a
+*.elf
+*.bin
+.idea/
+.DS_Store
